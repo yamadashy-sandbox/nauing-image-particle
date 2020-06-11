@@ -1,3 +1,5 @@
+"use strict";
+
 const IMAGE_URL = "./images/naubu.png";
 const PARTICLE_SIZE = 3; // image pixel size
 const PADDING = 30;
@@ -113,11 +115,11 @@ class ImageParticleSystem {
   _createParticleTexture() {
     const graphics = new PIXI.Graphics();
 
-    graphics.lineStyle(0);
     graphics.beginFill(0xFFFFFF);
     graphics.drawRect(0, 0, PARTICLE_SIZE, PARTICLE_SIZE);
+    graphics.endFill();
 
-    return graphics.generateTexture();
+    return this.renderer.generateTexture(graphics);;
   }
 
   _createParticles() {
@@ -185,5 +187,9 @@ function draw() {
 }
 
 function mouseMoved() {
+  repulsionChangeDistance = DEFAULT_REPULSION_CHANGE_DISTANCE;
+}
+
+function touchMoved() {
   repulsionChangeDistance = DEFAULT_REPULSION_CHANGE_DISTANCE;
 }
