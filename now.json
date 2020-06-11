@@ -1,0 +1,9 @@
+{
+    "builds":[
+        { "src": "*.html", "use": "@now/static" },
+        { "src": "css/*.css", "use": "@now/static" },
+        { "src": "js/*.js", "use": "@now/static" },
+        { "src": "images/*.png", "use": "@now/static" }
+    ],
+    "alias": "nauboo-particle"
+}
