@@ -132,6 +132,8 @@ class ImageParticleSystem {
     const texture = this._createParticleTexture();
     const fractionSizeX = imageWidth / PARTICLE_SIZE;
     const fractionSizeY = imageHeight / PARTICLE_SIZE;
+    const offsetX = (window.innerWidth - min(window.innerWidth, window.innerHeight)) / 2;
+    const offsetY = (window.innerHeight - min(window.innerWidth, window.innerHeight)) / 2;
 
     for (let i = 0; i < fractionSizeX; i++) {
       for (let j = 0; j < fractionSizeY; j++) {
@@ -146,7 +148,7 @@ class ImageParticleSystem {
         }
 
         originPosition.mult(imageScale);
-        originPosition.add(PADDING, PADDING);
+        originPosition.add(offsetX + PADDING, offsetY + PADDING);
 
         let point = new ImageParticle(originPosition, originScale, originColor);
         this.points.push(point);
