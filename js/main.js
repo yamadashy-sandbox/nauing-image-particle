@@ -1,10 +1,10 @@
 const IMAGE_URL = "./images/naubu.png";
-const PARTICLE_SIZE = 1; // image pixel size
+const PARTICLE_SIZE = 3; // image pixel size
 const PADDING = 30;
 const DEFAULT_REPULSION_CHANGE_DISTANCE = 80;
 
 let repulsionChangeDistance = DEFAULT_REPULSION_CHANGE_DISTANCE;
-let pointSystem = null;
+let particleSystem = null;
 let targetImage = null;
 
 // ==================================================
@@ -99,11 +99,11 @@ class ImageParticleSystem {
     const idx = (y * targetImage.width + x) * 4;
 
     if (x > targetImage.width || x < 0 || y > targetImage.height || y < 0) {
-      return [0,0,0,0];
+      return [0, 0, 0, 0];
     }
 
     return [
-      pixels[idx + 0],
+      pixels[idx],
       pixels[idx + 1],
       pixels[idx + 2],
       pixels[idx + 3]
@@ -135,6 +135,7 @@ class ImageParticleSystem {
         let originScale = imageScale;
         let originColor = this._getPixel(imagePosition.x, imagePosition.y);
 
+        // 透明はスキップ
         if (originColor[3] === 0) {
           continue;
         }
@@ -147,8 +148,6 @@ class ImageParticleSystem {
         this.container.addChild(point.createSprite(texture));
       }
     }
-
-    console.log("particle count: %s", int(fractionSizeX * fractionSizeY));
   }
 
   updateState() {
@@ -175,14 +174,14 @@ function setup() {
   targetImage.loadPixels();
   noStroke();
   frameRate(60);
-  pointSystem = new ImageParticleSystem();
+  particleSystem = new ImageParticleSystem();
 }
 
 function draw() {
   repulsionChangeDistance = max(0, repulsionChangeDistance - 1.5);
 
-  pointSystem.updateState();
-  pointSystem.render();
+  particleSystem.updateState();
+  particleSystem.render();
 }
 
 function mouseMoved() {
