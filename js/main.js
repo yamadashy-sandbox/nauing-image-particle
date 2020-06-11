@@ -1,7 +1,7 @@
 "use strict";
 
 const IMAGE_URL = "./images/naubu.png";
-const PARTICLE_SIZE = 3; // image pixel size
+const PARTICLE_SIZE = 1; // image pixel size
 const PADDING = 30;
 const DEFAULT_REPULSION_CHANGE_DISTANCE = 80;
 
@@ -34,8 +34,8 @@ class ImageParticle {
     return this.sprite;
   }
 
-  updateState(mousePosition) {
-    this._updateStateByMouse(mousePosition);
+  updateState() {
+    this._updateStateByMouse();
     this._updateStateByOrigin();
     this.velocity.mult(0.95);
     this.position.add(this.velocity);
@@ -45,9 +45,9 @@ class ImageParticle {
     this.sprite.scale.x = this.sprite.scale.y = this.scale;
   }
 
-  _updateStateByMouse(mousePosition) {
-    const distanceX = mousePosition.x - this.position.x;
-    const distanceY = mousePosition.y - this.position.y;
+  _updateStateByMouse() {
+    const distanceX = mouseX - this.position.x;
+    const distanceY = mouseY - this.position.y;
     const distance = mag(distanceX, distanceY);
     const pointCos = distanceX / distance;
     const pointSin = distanceY / distance;
@@ -156,10 +156,8 @@ class ImageParticleSystem {
   }
 
   updateState() {
-    const mousePosition = this.renderer.plugins.interaction.mouse.global;
-
     for (let point of this.points) {
-      point.updateState(mousePosition);
+      point.updateState();
     }
   }
 
