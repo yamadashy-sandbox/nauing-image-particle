@@ -32,8 +32,8 @@ class ImageParticle {
     return this.sprite;
   }
 
-  updateState() {
-    this._updateStateByMouse();
+  updateState(mousePosition) {
+    this._updateStateByMouse(mousePosition);
     this._updateStateByOrigin();
     this.velocity.mult(0.95);
     this.position.add(this.velocity);
@@ -43,9 +43,9 @@ class ImageParticle {
     this.sprite.scale.x = this.sprite.scale.y = this.scale;
   }
 
-  _updateStateByMouse() {
-    const distanceX = mouseX - this.position.x;
-    const distanceY = mouseY - this.position.y;
+  _updateStateByMouse(mousePosition) {
+    const distanceX = mousePosition.x - this.position.x;
+    const distanceY = mousePosition.y - this.position.y;
     const distance = mag(distanceX, distanceY);
     const pointCos = distanceX / distance;
     const pointSin = distanceY / distance;
@@ -153,11 +153,9 @@ class ImageParticleSystem {
 
   updateState() {
     const mousePosition = this.renderer.plugins.interaction.mouse.global;
-    mouseX = mousePosition.x;
-    mouseY = mousePosition.y;
 
     for (let point of this.points) {
-      point.updateState();
+      point.updateState(mousePosition);
     }
   }
 
