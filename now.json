@@ -1,6 +1,7 @@
 {
     "builds":[
         { "src": "*.html", "use": "@now/static" },
-        { "src": "src/**/*.*", "use": "@now/static" }
+        { "src": "dist/**/*.*", "use": "@now/static" },
+        { "src": "static/**/*.*", "use": "@now/static" }
     ]
 }
