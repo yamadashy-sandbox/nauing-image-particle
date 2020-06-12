@@ -51,8 +51,8 @@ class ImageParticle {
   }
 
   updateState() {
-    this._updateStateByMouse();
-    this._updateStateByOrigin();
+    this.updateStateByMouse();
+    this.updateStateByOrigin();
     this.velocity.mult(0.95);
     this.position.add(this.velocity);
 
@@ -61,7 +61,7 @@ class ImageParticle {
     this.sprite.scale.x = this.sprite.scale.y = this.scale;
   }
 
-  _updateStateByMouse() {
+  private updateStateByMouse() {
     const distanceX = p5instance.mouseX - this.position.x;
     const distanceY = p5instance.mouseY - this.position.y;
     const distance = p5instance.mag(distanceX, distanceY);
@@ -79,7 +79,7 @@ class ImageParticle {
     }
   }
 
-  _updateStateByOrigin() {
+  private updateStateByOrigin() {
     const distanceX = this.originPosition.x - this.position.x;
     const distanceY = this.originPosition.y - this.position.y;
     const distance = p5instance.mag(distanceX, distanceY);
@@ -111,16 +111,16 @@ class ImageParticleSystem {
     this.stage = new PIXI.Container();
     this.container = new PIXI.Container();
 
-    this._createParticles();
-    this._setup();
+    this.createParticles();
+    this.setup();
   }
 
-  _setup() {
+  private setup() {
     this.stage.addChild(this.container);
     document.body.appendChild(this.renderer.view);
   }
 
-  _getPixel(x: number, y: number): number[] {
+  private getPixel(x: number, y: number): number[] {
     const pixels = targetImage.pixels;
     const idx = (y * targetImage.width + x) * 4;
 
@@ -136,7 +136,7 @@ class ImageParticleSystem {
     ];
   }
 
-  _createParticleTexture() {
+  private createParticleTexture() {
     const graphics = new PIXI.Graphics();
 
     graphics.beginFill(0xFFFFFF);
@@ -147,11 +147,11 @@ class ImageParticleSystem {
     return this.renderer.generateTexture(graphics, PIXI.SCALE_MODES.LINEAR, 1);
   }
 
-  _createParticles() {
+  private createParticles() {
     const imageWidth = targetImage.width;
     const imageHeight = targetImage.height;
     const imageScale = p5instance.min((window.innerWidth - PADDING * 2) / imageWidth, (window.innerHeight - PADDING * 2) / imageHeight);
-    const texture = this._createParticleTexture();
+    const texture = this.createParticleTexture();
     const fractionSizeX = imageWidth / PARTICLE_SIZE;
     const fractionSizeY = imageHeight / PARTICLE_SIZE;
     const offsetX = (window.innerWidth - p5instance.min(window.innerWidth, window.innerHeight)) / 2;
@@ -162,7 +162,7 @@ class ImageParticleSystem {
         const imagePosition = p5instance.createVector(p5instance.int(i * PARTICLE_SIZE), p5instance.int(j * PARTICLE_SIZE));
         let originPosition = imagePosition;
         let originScale = imageScale;
-        let originColor = this._getPixel(imagePosition.x, imagePosition.y);
+        let originColor = this.getPixel(imagePosition.x, imagePosition.y);
 
         // 透明はスキップ
         if (originColor[3] === 0) {
