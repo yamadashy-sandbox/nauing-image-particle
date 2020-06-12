@@ -1,6 +1,6 @@
 "use strict";
 
-const IMAGE_URL = "./images/naubu.png";
+const IMAGE_URL = "./src/images/nauboo.png";
 const PARTICLE_SIZE = 1; // image pixel size
 const PADDING = 30;
 const DEFAULT_REPULSION_CHANGE_DISTANCE = 80;
