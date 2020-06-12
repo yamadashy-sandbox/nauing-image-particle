@@ -9,7 +9,7 @@ const PADDING = 10;
 const DEFAULT_REPULSION_CHANGE_DISTANCE = 80;
 
 let repulsionChangeDistance: number = DEFAULT_REPULSION_CHANGE_DISTANCE;
-let particleSystem: ImageParticleSystem = null;
+let imageParticleSystem: ImageParticleSystem = null;
 let targetImage: p5.Image = null;
 let p5instance: p5 = null;
 let mousePositionX: number = null
@@ -96,18 +96,19 @@ class ImageParticle {
 // ==================================================
 class ImageParticleSystem {
   private app: PIXI.Application;
-  private points: ImageParticle[];
+  private imageParticle: ImageParticle[];
   private renderer: PIXI.Renderer;
   private stage: PIXI.Container;
   private container: PIXI.Container;
 
   constructor() {
-    this.points = [];
+    this.imageParticle = [];
     this.app = new PIXI.Application({
       view: document.getElementById("viewport") as HTMLCanvasElement,
       backgroundColor: 0xFFFFFF,
       width: window.innerWidth,
-      height: window.innerHeight
+      height: window.innerHeight,
+      antialias: true,
     });
     this.renderer = this.app.renderer;
     this.stage = new PIXI.Container();
@@ -175,15 +176,15 @@ class ImageParticleSystem {
         originPosition.add(offsetX + PADDING, offsetY + PADDING);
 
         let point = new ImageParticle(originPosition, originScale, originColor);
-        this.points.push(point);
+        this.imageParticle.push(point);
         this.container.addChild(point.createSprite(texture));
       }
     }
   }
 
   updateState() {
-    for (let point of this.points) {
-      point.updateState();
+    for (let imageParticle of this.imageParticle) {
+      imageParticle.updateState();
     }
   }
 
@@ -204,14 +205,14 @@ function sketch(p5instance: p5) {
     targetImage.loadPixels();
     p5instance.noStroke();
     p5instance.frameRate(60);
-    particleSystem = new ImageParticleSystem();
+    imageParticleSystem = new ImageParticleSystem();
   }
 
   p5instance.draw = function() {
     repulsionChangeDistance = p5instance.max(0, repulsionChangeDistance - 1.5);
 
-    particleSystem.updateState();
-    particleSystem.render();
+    imageParticleSystem.updateState();
+    imageParticleSystem.render();
   }
 
   p5instance.mouseMoved = function() {

@@ -4,6 +4,9 @@
     "build": "NODE_ENV=production webpack",
     "dev": "webpack -w",
     "deploy": "NODE_ENV=production yarn build && now --prod",
+    "lint": "eslint ./app/scripts/**/*",
+    "lint:fix": "eslint ./app/scripts/**/* --fix",
+    "type-check": "tsc",
     "preinstall": "typesync | :"
   },
   "dependencies": {
@@ -25,7 +28,7 @@
     "@types/webpack": "^4.41.17",
     "babel-loader": "^8.0.6",
     "eslint": "^7.2.0",
-    "fork-ts-checker-webpack-plugin": "^4.1.3",
+    "fork-ts-checker-webpack-plugin": "^4.1.6",
     "ts-loader": "^7.0.5",
     "typescript": "^3.9.5",
     "typesync": "^0.7.0",

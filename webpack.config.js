@@ -1,16 +1,33 @@
+"use strict";
 
+const path = require('path');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
-  mode: process.env.NODE_ENV === "production" ? 'production' : 'development',
-  entry: './src/main.ts',
-
+  devtool: 'source-map',
+  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+  entry: './src/app.ts',
   module: {
     rules: [
       {
         test: /\.ts$/,
-        use: 'babel-loader?cacheDirectory',
+        loader: 'babel-loader?cacheDirectory',
+        exclude: /node_modules/,
       },
     ],
+  },
+  plugins: [
+    new ForkTsCheckerWebpackPlugin({
+      checkSyntacticErrors: true,
+      eslint: true,
+      tsconfig: path.resolve(__dirname, 'tsconfig.json')
+    })
+  ],
+  optimization: {
+    splitChunks: {
+      name: 'vendor',
+      chunks: 'initial',
+    }
   },
   resolve: {
     extensions: [
