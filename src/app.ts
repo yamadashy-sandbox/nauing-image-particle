@@ -16,6 +16,24 @@ let mousePositionX: number = null
 let mousePositionY: number = null
 
 // ==================================================
+// Utils
+// ==================================================
+function approxDistance(distanceX: number, distanceY: number) {
+  distanceX = Math.abs(distanceX);
+  distanceY = Math.abs(distanceY);
+
+  let max = Math.max(distanceX, distanceY);
+  let min = Math.min(distanceX, distanceY);
+  let approx = (max * 1007) + (min * 441);
+
+  if (max < (min << 4)) {
+    approx -= max * 40;
+  }
+
+  return (( approx + 512 ) >> 10 );
+}
+
+// ==================================================
 // ImageParticle Class
 // ==================================================
 class ImageParticle {
@@ -68,7 +86,7 @@ class ImageParticle {
   private updateStateByMouse() {
     const distanceX = mousePositionX - this.position.x;
     const distanceY = mousePositionY - this.position.y;
-    const distance = p5instance.mag(distanceX, distanceY);
+    const distance = approxDistance(distanceX, distanceY);
     const pointCos = distanceX / distance;
     const pointSin = distanceY / distance;
 
@@ -86,7 +104,7 @@ class ImageParticle {
   private updateStateByOrigin() {
     const distanceX = this.originPosition.x - this.position.x;
     const distanceY = this.originPosition.y - this.position.y;
-    const distance = p5instance.mag(distanceX, distanceY);
+    const distance = approxDistance(distanceX, distanceY);
 
     this.velocity.add(distanceX * this.gravity, distanceY * this.gravity);
     this.scale = this.originScale + this.originScale * distance / 512;
