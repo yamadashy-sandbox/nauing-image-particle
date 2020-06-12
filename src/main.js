@@ -5,7 +5,7 @@ import * as PIXI from 'pixi.js'
 
 const IMAGE_URL = "./static/images/nauboo.png";
 const PARTICLE_SIZE = 1; // image pixel size
-const PADDING = 30;
+const PADDING = 10;
 const DEFAULT_REPULSION_CHANGE_DISTANCE = 80;
 
 let repulsionChangeDistance = DEFAULT_REPULSION_CHANGE_DISTANCE;
