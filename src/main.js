@@ -1,6 +1,9 @@
 "use strict";
 
-const IMAGE_URL = "./src/images/nauboo.png";
+import p5 from 'p5';
+import * as PIXI from 'pixi.js'
+
+const IMAGE_URL = "./static/images/nauboo.png";
 const PARTICLE_SIZE = 1; // image pixel size
 const PADDING = 30;
 const DEFAULT_REPULSION_CHANGE_DISTANCE = 80;
@@ -8,6 +11,7 @@ const DEFAULT_REPULSION_CHANGE_DISTANCE = 80;
 let repulsionChangeDistance = DEFAULT_REPULSION_CHANGE_DISTANCE;
 let particleSystem = null;
 let targetImage = null;
+let p5instance = null;
 
 // ==================================================
 // ImageParticle Class
@@ -16,11 +20,11 @@ class ImageParticle {
   constructor(originPosition, originScale, originColor) {
     this.position = originPosition.copy();
     this.originPosition = originPosition.copy();
-    this.velocity = createVector(random(0, 50), random(0, 50));
-    this.repulsion = random(1.0, 5.0);
+    this.velocity = p5instance.createVector(p5instance.random(0, 50), p5instance.random(0, 50));
+    this.repulsion = p5instance.random(1.0, 5.0);
     this.mouseRepulsion = 1.0;
     this.gravity = 0.01;
-    this.maxGravity = random(0.01, 0.04);
+    this.maxGravity = p5instance.random(0.01, 0.04);
     this.scale = originScale;
     this.originScale = originScale;
     this.color = originColor;
@@ -46,27 +50,27 @@ class ImageParticle {
   }
 
   _updateStateByMouse() {
-    const distanceX = mouseX - this.position.x;
-    const distanceY = mouseY - this.position.y;
-    const distance = mag(distanceX, distanceY);
+    const distanceX = p5instance.mouseX - this.position.x;
+    const distanceY = p5instance.mouseY - this.position.y;
+    const distance = p5instance.mag(distanceX, distanceY);
     const pointCos = distanceX / distance;
     const pointSin = distanceY / distance;
 
     if (distance < repulsionChangeDistance) {
       this.gravity *= 0.6;
-      this.mouseRepulsion = max(0, this.mouseRepulsion * 0.5 - 0.01);
+      this.mouseRepulsion = p5instance.max(0, this.mouseRepulsion * 0.5 - 0.01);
       this.velocity.sub(pointCos * this.repulsion, pointSin * this.repulsion);
       this.velocity.mult(1 - this.mouseRepulsion);
     } else {
       this.gravity += (this.maxGravity - this.gravity) * 0.1;
-      this.mouseRepulsion = min(1, this.mouseRepulsion + 0.03);
+      this.mouseRepulsion = p5instance.min(1, this.mouseRepulsion + 0.03);
     }
   }
 
   _updateStateByOrigin() {
     const distanceX = this.originPosition.x - this.position.x;
     const distanceY = this.originPosition.y - this.position.y;
-    const distance = mag(distanceX, distanceY);
+    const distance = p5instance.mag(distanceX, distanceY);
 
     this.velocity.add(distanceX * this.gravity, distanceY * this.gravity);
     this.scale = this.originScale + this.originScale * distance / 512;
@@ -128,16 +132,16 @@ class ImageParticleSystem {
   _createParticles() {
     const imageWidth = targetImage.width;
     const imageHeight = targetImage.height;
-    const imageScale = min((window.innerWidth - PADDING * 2) / imageWidth, (window.innerHeight - PADDING * 2) / imageHeight);
+    const imageScale = p5instance.min((window.innerWidth - PADDING * 2) / imageWidth, (window.innerHeight - PADDING * 2) / imageHeight);
     const texture = this._createParticleTexture();
     const fractionSizeX = imageWidth / PARTICLE_SIZE;
     const fractionSizeY = imageHeight / PARTICLE_SIZE;
-    const offsetX = (window.innerWidth - min(window.innerWidth, window.innerHeight)) / 2;
-    const offsetY = (window.innerHeight - min(window.innerWidth, window.innerHeight)) / 2;
+    const offsetX = (window.innerWidth - p5instance.min(window.innerWidth, window.innerHeight)) / 2;
+    const offsetY = (window.innerHeight - p5instance.min(window.innerWidth, window.innerHeight)) / 2;
 
     for (let i = 0; i < fractionSizeX; i++) {
       for (let j = 0; j < fractionSizeY; j++) {
-        const imagePosition = createVector(int(i * PARTICLE_SIZE), int(j * PARTICLE_SIZE));
+        const imagePosition = p5instance.createVector(p5instance.int(i * PARTICLE_SIZE), p5instance.int(j * PARTICLE_SIZE));
         let originPosition = imagePosition;
         let originScale = imageScale;
         let originColor = this._getPixel(imagePosition.x, imagePosition.y);
@@ -171,28 +175,32 @@ class ImageParticleSystem {
 // ==================================================
 // Main
 // ==================================================
-function preload() {
-  targetImage = loadImage(IMAGE_URL);
+function sketch(p5instance) {
+  p5instance.preload = function() {
+    targetImage = p5instance.loadImage(IMAGE_URL);
+  }
+
+  p5instance.setup = function() {
+    targetImage.loadPixels();
+    p5instance.noStroke();
+    p5instance.frameRate(60);
+    particleSystem = new ImageParticleSystem();
+  }
+
+  p5instance.draw = function() {
+    repulsionChangeDistance = p5instance.max(0, repulsionChangeDistance - 1.5);
+
+    particleSystem.updateState();
+    particleSystem.render();
+  }
+
+  p5instance.mouseMoved = function() {
+    repulsionChangeDistance = DEFAULT_REPULSION_CHANGE_DISTANCE;
+  }
+
+  p5instance.touchMoved = function() {
+    repulsionChangeDistance = DEFAULT_REPULSION_CHANGE_DISTANCE;
+  }
 }
 
-function setup() {
-  targetImage.loadPixels();
-  noStroke();
-  frameRate(60);
-  particleSystem = new ImageParticleSystem();
-}
-
-function draw() {
-  repulsionChangeDistance = max(0, repulsionChangeDistance - 1.5);
-
-  particleSystem.updateState();
-  particleSystem.render();
-}
-
-function mouseMoved() {
-  repulsionChangeDistance = DEFAULT_REPULSION_CHANGE_DISTANCE;
-}
-
-function touchMoved() {
-  repulsionChangeDistance = DEFAULT_REPULSION_CHANGE_DISTANCE;
-}
+p5instance = new p5(sketch, document.body);
