@@ -74,12 +74,12 @@ class ImageParticle {
 
     if (distance < repulsionChangeDistance) {
       this.gravity *= 0.6;
-      this.mouseRepulsion = p5instance.max(0, this.mouseRepulsion * 0.5 - 0.01);
+      this.mouseRepulsion = Math.max(0, this.mouseRepulsion * 0.5 - 0.01);
       this.velocity.sub(pointCos * this.repulsion, pointSin * this.repulsion);
       this.velocity.mult(1 - this.mouseRepulsion);
     } else {
       this.gravity += (this.maxGravity - this.gravity) * 0.1;
-      this.mouseRepulsion = p5instance.min(1, this.mouseRepulsion + 0.03);
+      this.mouseRepulsion = Math.min(1, this.mouseRepulsion + 0.03);
     }
   }
 
@@ -154,12 +154,12 @@ class ImageParticleSystem {
   private createParticles() {
     const imageWidth = targetImage.width;
     const imageHeight = targetImage.height;
-    const imageScale = p5instance.min((window.innerWidth - PADDING * 2) / imageWidth, (window.innerHeight - PADDING * 2) / imageHeight);
+    const imageScale = Math.min((window.innerWidth - PADDING * 2) / imageWidth, (window.innerHeight - PADDING * 2) / imageHeight);
     const texture = this.createParticleTexture();
     const fractionSizeX = imageWidth / PARTICLE_SIZE;
     const fractionSizeY = imageHeight / PARTICLE_SIZE;
-    const offsetX = (window.innerWidth - p5instance.min(window.innerWidth, window.innerHeight)) / 2;
-    const offsetY = (window.innerHeight - p5instance.min(window.innerWidth, window.innerHeight)) / 2;
+    const offsetX = (window.innerWidth - Math.min(window.innerWidth, window.innerHeight)) / 2;
+    const offsetY = (window.innerHeight - Math.min(window.innerWidth, window.innerHeight)) / 2;
 
     for (let i = 0; i < fractionSizeX; i++) {
       for (let j = 0; j < fractionSizeY; j++) {
@@ -210,7 +210,7 @@ function sketch(p5instance: p5) {
   }
 
   p5instance.draw = function() {
-    repulsionChangeDistance = p5instance.max(0, repulsionChangeDistance - 1.5);
+    repulsionChangeDistance = Math.max(0, repulsionChangeDistance - 1.5);
 
     imageParticleSystem.updateState();
     imageParticleSystem.render();
