@@ -1,6 +1,6 @@
 "use strict";
 
-import p5 from 'p5';
+import * as p5 from 'p5';
 import * as PIXI from 'pixi.js'
 
 const IMAGE_URL = "./static/images/nauboo.png";
@@ -9,15 +9,27 @@ const PADDING = 10;
 const DEFAULT_REPULSION_CHANGE_DISTANCE = 80;
 
 let repulsionChangeDistance = DEFAULT_REPULSION_CHANGE_DISTANCE;
-let particleSystem = null;
-let targetImage = null;
-let p5instance = null;
+let particleSystem: ImageParticleSystem = null;
+let targetImage: p5.Image = null;
+let p5instance: p5 = null;
 
 // ==================================================
 // ImageParticle Class
 // ==================================================
 class ImageParticle {
-  constructor(originPosition, originScale, originColor) {
+  private position: p5.Vector;
+  private originPosition: p5.Vector;
+  private velocity: p5.Vector;
+  private repulsion: number;
+  private mouseRepulsion: number;
+  private gravity: number;
+  private maxGravity: number;
+  private scale: number;
+  private originScale: number;
+  private color: number[];
+  private sprite: PIXI.Sprite;
+
+  constructor(originPosition: p5.Vector, originScale: number, originColor: number[]) {
     this.position = originPosition.copy();
     this.originPosition = originPosition.copy();
     this.velocity = p5instance.createVector(p5instance.random(0, 50), p5instance.random(0, 50));
@@ -31,7 +43,7 @@ class ImageParticle {
     this.sprite = null;
   }
 
-  createSprite(texture) {
+  createSprite(texture: PIXI.Texture) {
     this.sprite = new PIXI.Sprite(texture);
     this.sprite.tint = (this.color[0] << 16) + (this.color[1] << 8) + (this.color[2]);
 
@@ -81,11 +93,16 @@ class ImageParticle {
 // ImageParticleSystem クラス
 // ==================================================
 class ImageParticleSystem {
+  private app: PIXI.Application;
+  private points: ImageParticle[];
+  private renderer: PIXI.Renderer;
+  private stage: PIXI.Container;
+  private container: PIXI.Container;
+
   constructor() {
     this.points = [];
-    this.pointSprites = [];
     this.app = new PIXI.Application({
-      view: document.getElementById("viewport"),
+      view: document.getElementById("viewport") as HTMLCanvasElement,
       backgroundColor: 0xFFFFFF,
       width: window.innerWidth,
       height: window.innerHeight
@@ -103,7 +120,7 @@ class ImageParticleSystem {
     document.body.appendChild(this.renderer.view);
   }
 
-  _getPixel(x, y) {
+  _getPixel(x: number, y: number): number[] {
     const pixels = targetImage.pixels;
     const idx = (y * targetImage.width + x) * 4;
 
@@ -126,7 +143,8 @@ class ImageParticleSystem {
     graphics.drawRect(0, 0, PARTICLE_SIZE, PARTICLE_SIZE);
     graphics.endFill();
 
-    return this.renderer.generateTexture(graphics);;
+    // TODO: 治す
+    return this.renderer.generateTexture(graphics, PIXI.SCALE_MODES.LINEAR, 1);
   }
 
   _createParticles() {
@@ -175,7 +193,7 @@ class ImageParticleSystem {
 // ==================================================
 // Main
 // ==================================================
-function sketch(p5instance) {
+function sketch(p5instance: p5) {
   p5instance.preload = function() {
     targetImage = p5instance.loadImage(IMAGE_URL);
   }
