@@ -53,11 +53,13 @@ class ImageParticle {
   }
 
   updateState() {
+    // 計算
     this.updateStateByMouse();
     this.updateStateByOrigin();
     this.velocity.mult(0.95);
     this.position.add(this.velocity);
 
+    // spriteの状態を更新
     this.sprite.position.x = this.position.x;
     this.sprite.position.y = this.position.y;
     this.sprite.scale.x = this.sprite.scale.y = this.scale;
@@ -146,8 +148,7 @@ class ImageParticleSystem {
     graphics.drawRect(0, 0, PARTICLE_SIZE, PARTICLE_SIZE);
     graphics.endFill();
 
-    // TODO: 治す
-    return this.renderer.generateTexture(graphics, PIXI.SCALE_MODES.LINEAR, 1);
+    return this.renderer.generateTexture(graphics, PIXI.SCALE_MODES.NEAREST, 2);
   }
 
   private createParticles() {
@@ -175,9 +176,9 @@ class ImageParticleSystem {
         originPosition.mult(imageScale);
         originPosition.add(offsetX + PADDING, offsetY + PADDING);
 
-        let point = new ImageParticle(originPosition, originScale, originColor);
-        this.imageParticle.push(point);
-        this.container.addChild(point.createSprite(texture));
+        let particle = new ImageParticle(originPosition, originScale, originColor);
+        this.imageParticle.push(particle);
+        this.container.addChild(particle.createSprite(texture));
       }
     }
   }
