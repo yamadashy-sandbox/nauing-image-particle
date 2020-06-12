@@ -8,10 +8,12 @@ const PARTICLE_SIZE = 1; // image pixel size
 const PADDING = 10;
 const DEFAULT_REPULSION_CHANGE_DISTANCE = 80;
 
-let repulsionChangeDistance = DEFAULT_REPULSION_CHANGE_DISTANCE;
+let repulsionChangeDistance: number = DEFAULT_REPULSION_CHANGE_DISTANCE;
 let particleSystem: ImageParticleSystem = null;
 let targetImage: p5.Image = null;
 let p5instance: p5 = null;
+let mousePositionX: number = null
+let mousePositionY: number = null
 
 // ==================================================
 // ImageParticle Class
@@ -62,8 +64,8 @@ class ImageParticle {
   }
 
   private updateStateByMouse() {
-    const distanceX = p5instance.mouseX - this.position.x;
-    const distanceY = p5instance.mouseY - this.position.y;
+    const distanceX = mousePositionX - this.position.x;
+    const distanceY = mousePositionY - this.position.y;
     const distance = p5instance.mag(distanceX, distanceY);
     const pointCos = distanceX / distance;
     const pointSin = distanceY / distance;
@@ -214,10 +216,14 @@ function sketch(p5instance: p5) {
 
   p5instance.mouseMoved = function() {
     repulsionChangeDistance = DEFAULT_REPULSION_CHANGE_DISTANCE;
+    mousePositionX = p5instance.mouseX;
+    mousePositionY = p5instance.mouseY;
   }
 
   p5instance.touchMoved = function() {
     repulsionChangeDistance = DEFAULT_REPULSION_CHANGE_DISTANCE;
+    mousePositionX = p5instance.mouseX;
+    mousePositionY = p5instance.mouseY;
   }
 }
 
